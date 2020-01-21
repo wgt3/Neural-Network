@@ -188,13 +188,13 @@ def back_prop(x,y,M,K,alpha,beta,gamma,lam):
 
 ##create random alphas and betas around 0
 def NNC(x,y,K,M,lam):
-    gamma =5e-1##learning rate- for some reason if this guy is not small we get huge and ascend
+    gamma =.5##learning rate- for some reason if this guy is not small we get huge and ascend #5e-1 is stable
     L = len(x[0]) 
     ##initialize alpha and beta and z and t and f. Make in range of X
-    alpha = (np.random.rand(M,L+1)-.5)*.001
-    beta = (np.random.rand(K,M+1)-.5)*.001
+    alpha = (np.random.rand(M,L+1)-.5)
+    beta = (np.random.rand(K,M+1)-.5)
     ##start with looping a couple times
-    for i in range(600):
+    for i in range(2000):
         theta = back_prop(x,y,M,K,alpha,beta,gamma,lam)
         alpha =theta[0]
         #print(alpha[0])
@@ -202,7 +202,7 @@ def NNC(x,y,K,M,lam):
         #print(beta[1])
         err  = Rfunc(y,theta[2])
         #if i%10 ==0:
-            #print(err)
+         #   print(err)
         
     return [err,theta]
 
@@ -256,11 +256,22 @@ for i in range(len(predict)):
 
 percent = percent/len(predict)
 
+#X1 = np.asarray(iris['petal_length'])
+#X2 = np.asarray(iris['petal_width'])
+#X = [[X1[i],X2[i]] for i in range(len(X1))]
+#
+#for i in range(len(predict)):
+#    if predict[i]==[1,0,0]:
+#        plt.scatter(X[i][0],X[i][1],color='salmon')
+#    elif predict[i]==[0,1,0]:
+#        plt.scatter(X[i][0],X[i][1],color='lightskyblue')
+#    else:
+#        plt.scatter(X[i][0],X[i][1],color='lightgreen')
 ##now lets do some plots
 
 ##you gotta bring this data down to the same size to test
-X1Test = np.arange(1,7,.1)/X1norm
-X2Test = np.arange(0,2,2./60.)/X2norm
+X1Test = np.arange(1,7.1,6.1/45.)/X1norm
+X2Test = np.arange(0,2.6,2.6/45.)/X2norm
 X1M, X2M = np.meshgrid(X1Test,X2Test)
 XTest = [[] for i in range(len(X1M))]
 for i in range(len(X1M)):
@@ -277,12 +288,15 @@ def Test(X,theta,K,M):
     #print err
     return f
 
+
+            
 test = [Test(XTest[i],result[1],K,M) for i in range(len(XTest))]
 testpredict =[classifyIris(test[i]) for i in range(len(test))]
 ##now bring the data back around to what u want
-X1Test = np.arange(1,7,.1)
-X2Test = np.arange(0,2,2./60.) 
+X1Test = np.arange(1,7.1,6.1/45.)
+X2Test = np.arange(0,2.6,2.6/45.) 
 X1M, X2M = np.meshgrid(X1Test,X2Test)
+##orgnize into data pairs
 for i in range(len(X1M)):
     XTest[i] = [[X1M[i][j],X2M[i][j]] for j in range(len(X1M))]
 for i in range(len(XTest)):
@@ -296,4 +310,4 @@ for i in range(len(XTest)):
 
 plt.scatter((iris[iris.Y==0]['petal_length']),(iris[iris.Y==0]['petal_width']),color='red',marker='x')
 plt.scatter((iris[iris.Y==1]['petal_length']),(iris[iris.Y==1]['petal_width']),color='blue',marker='x')
-plt.scatter((iris[iris.Y==2]['petal_length']),(iris[iris.Y==1]['petal_width']),color='green',marker='x')
+plt.scatter((iris[iris.Y==2]['petal_length']),(iris[iris.Y==2]['petal_width']),color='green',marker='x')
